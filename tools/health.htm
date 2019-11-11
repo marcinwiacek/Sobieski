@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id=info></div>
+<div id=pages style='visibility:hidden'></div>
+
+<script>
+Aurl = 'http://localhost/www/health.htm';
+ImgAurl = 'sites/default/files';
+url = 'http://localhost/www/index.php?q=node/';
+siteTitle = "Marcin's page ON-LINE";
+
+function addToLog(text) {
+	document.getElementById("info").innerHTML = document.getElementById("info").innerHTML + text + "<br>";
+}
+
+function strcmp(a, b) {   
+    return (a<b?-1:(a>b?1:0));  
+}
+
+function loadFile3(id3,url3) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+			} else {
+				addToLog("File "+id3+" "+url3+" Error3 "+this.status + this.statusText);
+			}
+    		}
+	};
+	xhttp.open("GET", url3, true);
+	xhttp.send();
+}
+
+function loadFile2(id2,url2) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				if (this.responseText.indexOf("<title>"+siteTitle+"</title>")!=-1) {
+					addToLog("File "+id2+" "+url2+" Wrong link2");
+				}
+			} else {
+				addToLog("File "+id2+" "+url2+" Error "+this.status + this.statusText);
+			}
+    		}
+	};
+	xhttp.open("GET", url2, true);
+	xhttp.send();
+}
+
+function loadFile(id) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				if (this.responseText.indexOf("<title>"+siteTitle+"</title>")!=-1) {
+					addToLog("Reading file "+url+id+" Skipping");
+				} else {
+					if (this.responseText.indexOf("<p id=complete>")==-1) {		
+						addToLog("Reading file "+url+id+ "No full text"+this.responseText);
+					}
+					start = this.responseText.search("<body>");
+					stop = this.responseText.search("</body>");
+					document.getElementById("pages").innerHTML = this.responseText.substr(start+6,stop - start - 6);
+					for(i=0;i<document.links.length;i++) {
+						// check for internal links. Needs a lot of time.
+//						if (document.links[i].href.indexOf(Aurl)!=-1 && document.links[i].href.indexOf(Aurl+"#")==-1) {
+//							loadFile2(id,document.links[i].href.replace("health.htm","index.php"));
+//						}
+						if (document.links[i].href.indexOf(ImgAurl)!=-1) {
+							loadFile3(id,document.links[i].href);
+						}
+					}
+
+					for(i=0;i<document.getElementsByTagName("img").length;i++) {
+						if (document.getElementsByTagName("img")[i].src.indexOf(ImgAurl)!=-1) {
+							loadFile3(id,document.getElementsByTagName("img")[i].src);
+						}
+					}
+
+				}
+			} else {
+				addToLog("Reading file "+url+id+" Error "+this.status + this.statusText);
+			}
+    		}
+	};
+	xhttp.open("GET", url+id, true);
+	xhttp.send();
+}
+
+for (i=1;i<371;i++) {
+	loadFile(i);
+}
+
+</script>
+
+</body>
+</html>

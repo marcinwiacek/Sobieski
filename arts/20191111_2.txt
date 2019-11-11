@@ -1,0 +1,26 @@
+﻿Title:Example page 2
+Author:marcin
+When:11 Nov 2019
+Taxonomy:English,x86,English article
+
+Page teaser and beginning of page
+<!--break-->
+Page context
+
+<a href=?q=1>First page</a>
+<p><a href=?q=test>First page</a>
+
+<!--comments-->
+Title:my comment 1
+ID:369
+Author:Anonymous (not verified)
+When:1 Aug 2010
+
+Text
+<!--comment-->
+Title:my comment 2
+ID:370
+Author:Anonymous (not verified)
+When:1 Aug 2010
+
+<b>Text</b>
